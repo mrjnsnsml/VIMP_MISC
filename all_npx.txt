@@ -1,0 +1,105 @@
+npm install npx -g
+npm install -g npm@9.7.2
+npx -p @angular/cli@16.0.0 ng new ng16proj --style=scss
+cd ng16proj 
+npm i @angular/material --save
+ng add @progress/kendo-angular-inputs 
+npx ng s 
+mkdir services/
+mkdir pipes/
+mkdir features/
+npx ng g module shared 
+	- creates shared/
+	- creates shared/shared.module.ts 
+npm install lodash-es --save
+npm install @types/lodash-es --save-dev
+	imp:- use it like this !!!!
+	import debounce from 'lodash-es/debounce'		
+
+cd src\app\features 
+npx ng g module test
+cd features/test/ 
+npx ng g c test 
+(we will use this test comp. to test our maticons,kendodrawer,kendogrid, etc.)
+cd shared/
+npx ng g c common-kdrawer
+	npm i @progress/kendo-angular-layout --save 
+		(Kendo UI for Angular Layout Package (AppBar, Avatar, Card, Drawer, Menu, PanelBar, Splitter, Stepper, and TabStrip Components))
+		https://www.npmjs.com/package/@progress/kendo-angular-layout	
+	npm i @progress/kendo-angular-grid --save
+		https://www.npmjs.com/package/@progress/kendo-angular-grid
+	npm i @progress/kendo-svg-icons --save
+		import {  SVGIcon,  bellIcon,  calendarIcon, envelopLinkIcon, inboxIcon, menuIcon, starOutlineIcon } from "@progress/kendo-svg-icons";		
+TODO:-
+Interceptors:-
+	>> csrf
+	>> error handling 
+	>> caching
+	>> profiling 
+	
+shared-components:=
+	>> common-kendo-drawer	==> done.
+	Below are nice to have things.
+	>> common-kendo-grid 	==> not required !!! lets keep it scalable and on-demand.
+		auto vs manual 
+	>> MatProgressBar ??
+	>> common-button ?? 	(NO!!!)
+	>> Localstorage + sessionStorage 
+	>> common-chart (zing vs highchart)
+	>> chatGPT??
+	>> theming. BE API sends theming settings.
+	>> multi-tenant?? (not now !!!)
+	
+	
+Webworker:
+	>> npx ng generate web-worker test
+	
+	
+Login:= pending	
+	>> https://www.udemy.com/course/angular2-advanced/learn/lecture/6026400#overview
+	>> bastion (is project name in firebase)
+	>> firebase account is tied to mrjnsnsml@gmail.com 
+	>> Add Firebase to your web app 
+		- nickname: "hr" 
+		- no hosting is setup at this time. it can be setup later as well.
+	>> npm install firebase --save 
+		Then, initialize Firebase and begin using the SDKs for the products you'd like to use.	
+	>> // Import the functions you need from the SDKs you need
+		import { initializeApp } from "firebase/app";
+		import { getAnalytics } from "firebase/analytics";
+		// TODO: Add SDKs for Firebase products that you want to use
+		// https://firebase.google.com/docs/web/setup#available-libraries
+
+		// Your web app's Firebase configuration
+		// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+		const firebaseConfig = {
+		  apiKey: "AIzaSyA8_zYIYZXcwRyQhKBUVBC73YeWYBCY2qc",
+		  authDomain: "bastion-294e7.firebaseapp.com",
+		  projectId: "bastion-294e7",
+		  storageBucket: "bastion-294e7.appspot.com",
+		  messagingSenderId: "389615906439",
+		  appId: "1:389615906439:web:38b7cc291df098ca089222",
+		  measurementId: "G-8P7VXQT8VY"
+		};
+
+		// Initialize Firebase
+		const app = initializeApp(firebaseConfig);
+		const analytics = getAnalytics(app);	
+
+	>> Note: This option uses the modular JavaScript SDK, which provides reduced SDK size.
+Learn more about Firebase for web: Get Started, Web SDK API Reference, Samples
+
+	Web: Get Started 	https://firebase.google.com/docs/web/setup?hl=en&authuser=0&_gl=1*molt9w*_ga*Nzg0MTc0MzQyLjE2ODg1MzUzOTg.*_ga_CW55HF8NVT*MTY4ODUzNTM5OC4xLjEuMTY4ODUzODM2OS4wLjAuMA..
+
+	API Reference	https://firebase.google.com/docs/reference/js/?hl=en&authuser=0&_gl=1*molt9w*_ga*Nzg0MTc0MzQyLjE2ODg1MzUzOTg.*_ga_CW55HF8NVT*MTY4ODUzNTM5OC4xLjEuMTY4ODUzODM2OS4wLjAuMA..
+	
+	>> npm install angularfire --save 
+	
+	app.module 
+	import { AngularFireModule } from 'angularfire';
+	export fbConfig = {
+		// add the properties here. 
+	};
+		
+	Samples 	https://firebase.google.com/docs/samples/?hl=en&authuser=0&_gl=1*t43h7t*_ga*Nzg0MTc0MzQyLjE2ODg1MzUzOTg.*_ga_CW55HF8NVT*MTY4ODUzNTM5OC4xLjEuMTY4ODUzODY3NS4wLjAuMA..
+		

@@ -1,0 +1,90 @@
+https://www.udemy.com/course/angular-universal-course/learn/lecture/21786322?start=29#overview
+
+>> Angular University Application Shell 	
+>> State Transfer API: to transfer state from server to client 
+>> Pre-Render Static Routes:
+>> Pre-Render Dynamic Routes: 	
+>> Google Cloud Platform for Node Engine:
+>> DOT NET triggers runtine node engine on client side, which shows the page:-
+>> Github.com/angular-university
+	
+	ng add @nguniversal/express-engine 
+	I will add these within package.json::scripts
+		"dev:ssr": "ng run angular-course:serve-ssr",
+		"serve:ssr": "node dist/angular-course/server/main.js",
+		"build:ssr": "ng build --prod && ng run angular-course:server:production",
+		"prerender": "ng run angular-course:prerender"
+		
+	npm run dev:ssr 
+
+>> app.module.ts (AppModule)
+   app.server.module.ts (AppServerModule)
+	-- AppServerModule "imports" AppModule + ServerModule 
+	-- the "ServerModule" comes from @angular/platform-server. 
+	-- it has DI injectors like SERVER_RENDER_PROVIDERS, SERVER_HTTP_PROVIDERS, etc. 
+	-- Another module is "BrowserModule" , which has BROWSER_MODULE_PROVIDERS, etc.  
+	
+ + 
+	tsconfig.json 
+	tsconfig.server.json
+ + 
+
+>> client App + Server App 
+- we have 2 applications with 2 separate builds 
+- both client and server app have their own application root module. 
+- How does the client and server apps interact @ runtime ??
+	>> Whenever a server side application renders a particular angular root, it generates css + html eg. tmp.html 
+		Server App --> produces tmp.html --> this file will be sent to users browser. (it will have all js/css/html to run on client side)
+		
+	>> client App 
+		(non-ssr) 			imports: [ BrowserModule, ... ]
+		(ssr)	 			imports: [ BrowserModule.withServerTransition({appId: 'serverApp'}), ... ]
+		
+	>> 	the tmp.html (which is sent to client) will have embedded styles in it like 
+		<style ng-transition="serverApp">> .... 
+		Once tmp.html is sent to client side, angular will remove all these embedded styles and everything will work like a client SPA.
+		
+>> Angular Server Hot Reload Mode 
+	npm run dev:ssr (tracks changes to code; it is for dev only, not for prod-mode)!!!
+					-- any changes will REBUILD BOTH client and server app. 
+
+>> Production Build 
+	npm run build:ssr (it needs the client-app to run properly i.e. ng build --prod ).
+	(non-ssr)	dist/ folder
+	(ssr)		dist/<projectname>/browser
+				dist/<projectname>/server
+
+
+	Starting server in PROD mode: 
+		npm run serve:ssr (starts the node server listening on port 4000)
+		
+		
+>> Angular Universal Express Server: In Detail 	(Ng Express Engine)
+	src/server.ts 
+	renderModuleFactory 
+	
+>> Pre-Rendering (static Pages) 
+	Pre-rendering: without even running the server, we can display client app. 
+	
+	npm run prerender
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

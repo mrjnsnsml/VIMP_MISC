@@ -1,0 +1,305 @@
+>> hellojensonsamuel@gmail.com
+>> 4#4q*e9r!tYu3kF
+Stored in Google Password Manager. Its already bookmarked. Else, goto passwords.google.com (chrome session of mrjnsnsml@gmail.com) 
+
+Angular & do it now:-
+1) https://frontendmasters.com/courses/production-angular/
+	>> https://github.com/onehungrymind/fem-production-angular
+	>> Services use the facade-pattern in that they sit between the producer and consumer and prevent the consumers from seeing producers logic.
+	>> Nx workspaces:-
+		- allows u to extends SPA and allows us to generate more than one application (and organize so we can share code).
+		- used as nx + angular cli 
+		- Before we get into that we have to talk about Data Modeling.
+		- Nx : extensible dev tools for monorepos
+		- U can run an angular application from NX and also a react app. Both sit next to each other.
+		- npx create-nx-workspace@10.3.2 fem-production-angular --appName=dashboard --preset=angular-nest --npmScope=fem 
+			--linter=tslint --style=scss --nx-cloud=false 
+		- npm start (above cmd created ng + nest application) 
+		- yarn add concurrently --save-dev 
+		-- add some lines in package.json ???
+		- Now u can create another app called "client" (the prev app was called "dashboard"
+			ng g app client --linter=tslint --style=scss --routing=false -d 
+				-d means dry run 
+		- nx run client:serve 
+		- create a common toolbar which can be shared with both projects.
+		- nx g lib ui-toolbar --style=scss 
+		- blah blah blah 
+		- yarn add webpack-bundle-analyzer --save-dev 
+			ng build --stats-json 
+		
+2) https://frontendmasters.com/courses/web-app-performance/
+		>> https://github.com/firtman/adv-webperf
+		>> Problem: Web is slow 
+			- it is mostly because of bad UI decisions.
+			- 12.5 secs average on mobile devices. 
+		>> Problem: Underestimating the mobile space 
+		>> Core Web Vitals (most imp metrics). Because if we dont know this, we wont know how fast is fast.
+			->> Largest Contentful Paint (LCP) -- loading or initial load 
+				- its different for diff viewports.
+			->> First Input Delay (FID) -- interactivity 
+			->> Cumulative Layout Shift (CLS) -- visual stability 
+		>> How fast is fast?
+			- we have to define our performance budgets. 
+			- webpagetest : download and run it locally so u can test ur sites there.
+			- FCP: first contentful paint 
+		>> Browsing the web has below steps:-
+			- Network layer
+			- parsing
+			- Resource Discovery Phase
+			- Resource Prioritization
+			- Layout 
+			- Paint 
+			
+			www.frontendmasters.com	(assuming, without any latency eg. in 2g or 3g).
+			Goal:- LCP-2.5 secs (ideal secs for Largest Contentful Paint).
+				1-DNS Query - 100ms
+				2-TCP Connection - 120ms
+				3-SSL Negotiation - 150ms
+				4-HTTP Request (header + body)
+				5-server process - (BE time 200ms to 500ms)
+				6-HTTP Response (header + body)
+				7-Browsers HTML parsing 
+				8- Resources discovery phase & priority to each resource
+				9- Render (layout,paint)
+				
+			>> Versions of HTTP 	
+				HTTP/1.1
+				- http archive (from archive.org stores all http versions)
+				- 1 req per tcp connection. 1phone or 1download, we can call once or download once. 
+				- Limited no. of parallel requests to the server
+				- GZIP encoding accepted. (everything is ziipped so transfer size is reduced).
+				
+				HTTP/2.
+				- Performance from scratch 
+				- Header Compression	
+				- TCP Connection reuse 
+				- TLS-based only 
+				
+				HTTP/3 
+				- transport protocol over UDP 
+				- reduce latency and connection messages
+				- HTTP/2 interface with TLS 
+		
+			>> Browsers Cache 
+				- we need to make cache a friend 
+				- we need to decide Cache headers per file 
+					-- create absolute expiration date (1.0)
+					-- or create relative expiration date (1.1) 
+					-- more specs/values 
+				
+			>> Browser needs a resource 
+				1. It checks the cache 
+					A. Cache MISS: we goto the network.
+					B. Cache HIT: 
+						- verify if its expired or not; if not expired use it.
+						- if expired, it will go to the network, but not for what u r expecting. 
+							>> it makes a conditional request:- hey server, css file, i have a version. 
+								1. same file, updated modified header (from server) 
+								2. OK, new file (from server). either of this can happen.
+							>> we should want to avoid conditional requests, because its almost like getting a new file.
+								- static resources, keep it for a long time, like 60 yrs. ?
+							>> Browser cache is different from other storages.
+								- this author has another tut on storage APIs to understand browser cache in deep. :) 
+								
+			>> bfcache: safari, firefox and just arrived in chrome. 
+				Back/Forward Cache(bfcache).
+				- it keeps the page navigation in memory if the user navigates away .
+				- its automatic 
+				- its not related to resources;but it keeps page navigation in memory. 
+				- u shouldn't use unload-events.
+					Cache-Control: no-store (hey browser, dont store data) . Browser will disable bfcache for ur site. 
+					
+					Under Chrome->Application->Backforward Cache (Background Services section) 
+					
+				- Page Navigation API 
+					>> Open/Restore Connections eg. disconnect websocket if user goes out and reconnect when the user comes back.
+						"Javascript in the background". Check this out.
+					>> Abort Pending Transactions 
+					
+			>> Service Workers and cache storage 
+					- Service worker: Javascript file (Proxy Middleware) between your website and the servers. 
+					- different thread, its a worker. 
+					- it has its own life cycle.
+					- (Kyle Simpson on Service Workers) and (Javascript in the background) covers service workers in depth.
+					- it can act like a server for ur website.
+					- it can help u to not rely on the browsers' cache and create ur own cache. 
+					- Service worker can search the "cache storage" before making any calls to the server.
+					- it WILL NOT the first initial visit of the user. but it MIGHT help in the next visits.
+					- it will help u create offline capable web. (PWA??)
+					- its a low level API, so people do not understand it. or use a library. Workbox is such a library.
+					- debugging is very painful 
+			
+			>> Resource Loading, Frames and interactivity.
+					Basic Performance:- HTML, JS and CSS 
+						- If browser is reading HTML and it encounters JS, it will stop parsing it. 
+						  And if parsing is blocked, rendering is also blocked. 
+						- CSS blocks rendering. (JS stops HTML parsing). 
+						
+					Frames and Interactivity:-
+						- After page is loaded, browser has an animation loop. eg. scroll is animation loop. 
+						- 
+			>> Gzip, Cookies and Redirects 
+					- Enable Gzip on text based files. 
+					- Cookie: resides on the client but both client and server has access to it. 
+						Author says cookies may go away in future and to use cookie-less domain. 
+					- Didn't seem imp. to me. 
+
+			>> Optimizing CSS, Javascript, and images. 
+					- CSS should be at the top in the head-tag.
+					- CSS may include other CSS files, which is bad for performance. Don't use @Import. User additional link tag to include css in index.html and all css will begin downloading at the same time.
+					- CSS is appetizer, hence it should be handled first. 
+					
+					- JS is dessert so it should be last. Defer it as much as possible. 
+					- it uses the main thread. 
+					- Convert our scripts into non-blocking scripts. 
+						In HTML 5, there is a defer attribute. <script defer>.
+						This will cause the browser to handle JS parallely and not stop the HTML parsing.
+	
+							<script src="script.js" defer> :- start parallely and execute JS later 
+							<script src="script.js" async> :- start parallely and execute JS now !!! pauses parsing for a while.
+						
+						If you get confused, always use defer. (and there is NO NEED to move it in the body tag in HTML5). It was a OLD hack.
+						So ur head should look like this:-
+						
+						<head>
+							<link ... >
+							<link ... >
+							<link ... >
+							
+							<script src="script.js" defer>
+							<script src="script2.js" defer>
+							
+							<meta ... 
+							<meta ... 
+							<meta ... 
+							<title...
+						</head>	
+						
+					- Release the main thread ASAP. 
+					- Embrace SVG 
+
+			>> Hacking first load :-
+					- avoid more than 1 roadtrip
+					- Above the Fold (ATF) and Below the Fold(BTF) like folding a newspaper.
+						BTF is cheaper and ATF is expensive. 
+					- hstspreload.org (go directly to https) eg. whitehouse.gov
+						- avoid http to https redirect by adding the header to the server. 
+			
+			>> Largest Content Paint LCP :-
+					- Preloading:- 
+								<link rel="preload" href="styles.css" as="style">
+					- But what if js is looping and fetching images dynamically at runtime? 
+								<link rel="preload" href="gallery/ancient-greece.png" as="image">
+						this will store the image in the cache. 
+						and when the html finds it, it will be a cache HIT scenario
+					- we use this for elements which are obscure or hidden in the html.
+					- other examples: 
+							<link rel="preload" href="pathto.woff2" as="font">
+					- DONOT add the "preload" to things which are visible in html. it should be added only to obscure things.
+
+			>> HTTP Early hints 
+					- server sends Http Code 103 
+					- 103 is sent before processing server-side 
+					- then send http code 200 
+				- u will have to set it up on apache/nginx/cloudfare; so that the server can send early hints.
+				- if browser does not support early hints, browser will just wait.
+				
+			>> Hacking Data Transfer 
+					HTTP / 3 (QUIC over HTTP). helped 30% buffering in youtube. its UDP + thin layer on top UDP.
+					- over udp .
+			>> Zopfli / Brotli (for gzip like compression)
+					In request headers, we can see:-
+						Accept-Encoding: gzip, deflate, br 
+					(br is Brotli)
+			>> Modern Image Formats
+					SVG 
+					WebP, AVIF, Guetzli JPEG, Zopfli PNG 
+					
+					Different containers:-
+						WebP (all browsers)
+						AVIF its WebP 2.0 basically but not supported by all (Chrome supports) 
+						
+					Compatible with IE6
+						Guetzli JPEG 
+						Zopfli PNG 
+					
+					squoosh.app (website) 
+						shows how u can reduce image sizes using webp, etc. 
+						squoosh.cli can be used from the command line. 
+						
+			>>	old code:-
+					<img src="ancient-greece.png">
+					
+				new code:-
+					<picture>
+						<source type="image/webp" src="gallery/ancient-greece.png">	// This line says, if browser supports use the webp version.
+						<img src="ancient-greece.png" 
+							 fetchpriority="high"
+						>
+					</picture>
+					
+			>> Modern Cache control
+				Design pattern 1: Cache-Control: immutable 
+					- modern frameworks like react/angular have files like app05d.js which is basically the hash embedded in their names.
+					- these will never expire. So Cache conditional reload will never happen, because they never expire.
+					- when we know the assets will never expire, we can use 
+							Cache-Control: immutable 
+					   this way we can tell browser, these assets will never expire, do not make conditional cache requests on these.
+					   
+				Design Pattern 2 : stale-while-revalidate
+					- serve from the cache 
+					- but update it in the background for later.
+					- it wont be benefitial for current load, but it will be benefitial not next load. 
+						Cache-Control: stale-while-revalidate=99 
+						where 99 is time and it can be in minutes/hrs,days 
+					
+3) https://frontendmasters.com/courses/web-perf/
+
+4) https://frontendmasters.com/courses/getting-a-job/
+
+---
+
+Vanilla JS 
+https://frontendmasters.com/courses/web-app-performance/
+https://frontendmasters.com/courses/algorithms-practice/  Kyle Simpson 
+
+https://frontendmasters.com/courses/advanced-async-js/
+https://frontendmasters.com/courses/web-components/
+
+----
+
+Animation:-
+https://frontendmasters.com/courses/svg-essentials-animation/
+https://frontendmasters.com/courses/3d-webxr/
+
+---
+ 
+Gyan:-
+https://frontendmasters.com/courses/web-auth-apis/	
+https://frontendmasters.com/courses/web-storage-apis/
+https://frontendmasters.com/courses/monorepos/
+https://frontendmasters.com/courses/device-web-apis/
+
+https://frontendmasters.com/courses/enterprise-ui-dev/
+https://frontendmasters.com/courses/background-javascript/
+https://frontendmasters.com/courses/service-workers/
+https://frontendmasters.com/courses/web-security/
+
+https://frontendmasters.com/courses/enterprise-patterns/
+
+---
+
+Interviews:-
+https://frontendmasters.com/courses/interviewing-frontend/		
+https://frontendmasters.com/courses/web-dev-quiz/
+
+---
+
+React:-
+https://frontendmasters.com/courses/react-typescript-v2/ 
+https://frontendmasters.com/courses/client-graphql-react/
+
+https://frontendmasters.com/courses/javascript-accessibility/
+
+---
+

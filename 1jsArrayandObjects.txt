@@ -1,0 +1,70 @@
+JS Revision:-
+
+ex.1.	https://stackblitz.com/edit/js-mgc7hi?file=index.js
+	var x = function (argss) {
+	  console.log(argss, arguments[0]);
+	};
+
+	x([-1, 1, 2, -2, 3, -3, 4]);
+
+inbuilt array is "arguments", hence without declaring it we can access it as arguments[0]
+Other variable names like args, args, etc. is user defined. 
+
+ex.2. 
+	var x = function (args) {
+	  console.log(args);
+	};
+	x({}, [-1, 1, 2, -2, 3, -3, 4]);	If you pass 2 params eg. {} and [], then it will take the first one and ignore the rest.
+										Here, args = {} 
+
+ex.3. Check if 2 variables, reference the same object. ===
+
+	var x = function (args) {
+	  // 1.
+	  // let input = JSON.parse(JSON.stringify(args));
+	  // console.log(input === args);   // output == false
+	  //2.
+	  let input = args;
+	  console.log(input === args);    // output == true 
+	};
+	x([-1, 1, 2, -2, 3, -3, 4]);
+										
+	
+ex.4. 
+	In above example, .map and .forEach both work on the input-array. 
+	 input.forEach((item, index) => {			// input.map also has index. 
+		console.log(item, index);
+	  });
+	
+ex.5. Solution1 to the interview question:-
+	  PROBLEM:- it works only for the given input. 
+
+	var x = function (args) {
+	  let input = JSON.parse(JSON.stringify(args));
+	  let output = [];
+	  input.forEach((item, index) => {
+		if (
+		  input[index] &&
+		  input[index + 1] &&
+		  input[index] + input[index + 1] == 0
+		) {
+		  let tmpArr = [input[index], input[index + 1]];
+		  output.push(tmpArr);
+		}
+	  });
+
+	  console.log(output);
+	};
+	x([-1, 1, 2, -2, 3, -3, 4]);	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
