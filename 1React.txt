@@ -983,3 +983,370 @@ Things to explore
 		
 	// it intercepts the render of the component.
 	
+++++++++++
+
+React Lazy 	
+https://www.youtube.com/watch?v=MJn4W7pR6RU
+
+const lazyAbout = React.lazy(()=>(import ('./components/About')) )
+// this will cause console errors for Suspense, so we need to wrap this in React.Suspense 
+
+<Route path = 'about' element={<React.Suspense fallback='loading...'><LazyAbout/></React.Suspense>} />	
+NOTE: fallback in React.Suspense can also take a component it seems. 
+
++++++++++++
+
+
+https://www.youtube.com/watch?v=TNhaISOUy6Q
+
+	React < 16.8 was class-based components leading to anti-pattern of "wrapper hell"
+	- Problem: passing components as arguments to other components. Called "Higher Order Components". 
+	- 
+	
+Custom hook
+		
+		
+
+		function useDisplayName(){
+			const [displayName, setDisplayName] = useState(null);
+			useEffect(()=>{
+			...
+			}, []);
+			
+			useDebugValue(displayName ?? 'loading...'); // will display the name in the react-devtools.
+			
+			return displayName
+		}
+		
+		
++++++++++++
+useNavigate()
+useParams()
+	import { useParams } from "react-router-dom";
+	const { id } = useParams();
+	-or-
+	const params = new URLSearchParams(window.location.search) // id=123
+    let id = params.get('id') // 123 
+	
+	https://stackoverflow.com/questions/62426998/react-hooks-how-to-get-parameter-value-from-query-string
+	
+useLocation() // window.location.*
+useSignal() // better alternative than useState() bcoz useState is tied with re-rendering.
+
++++++++++++
+
+
+React testing library : beforeEach, beforeAll, afterEach(()=>{}), afterAll(),
+						Link should be wrapped within <BrowserRouter> (which is in react-dom);
+
+-OR-
+
+React Storybook + jest 
+
+++++++++++
+https://www.youtube.com/watch?v=7dTTFW7yACQ&list=PL4cUxeGkcC9gm4_-5UsNmLqMosM-dzuvQ
+
+@testing-library/jest-dom
+@testing-library/react
+@testing-library/user-event 
+
+component.test.js 
+
+import { render, screen } from '@testing-library/react';
+
+screen.findAllBy*() methods are there. 
+getBy*() methods
+	screen.getByText()
+	screen.getByRole()
+	screen.getByTitle()
+	screen.getByTestId()
+	
+		expect(someElement).toBeInTheDocument();
+		
+---
+Angular: jasmine + karma + TestBed. CreateFixtures + DebugElement (to get nativeElement)
+
+			describe("", ()=>{
+				beforeEach()
+				it("", ()=>{
+					expect(somevar).toBeTruthy();
+				})
+				
+			});	
+			
+---
+
+React: 	jest 
+
+	test()
+
+	it("", async()=>{
+		render(<Somecomp />);
+		const headingElement = screen.getByRole("heading", {name:"MyHeader"});
+		expect(headingElement).toBeInTheDocument();
+	})
+
++++++++++++++++++++++++
+
+Micro FE :-
+	- use module federation feature of webpack
+	- implement a shell application or "orchestrator" : to load and manage micro frontends. 
+	- 
+	
+	https://www.youtube.com/watch?v=-LMQKc4bVSk
+	webpack.config.js for Shell-Application
+		plugins:[htmlPlugin, new ModuleFederationPlugin({
+			name: "ShellApplication",	// or container or host-app or home or orchestrator or whatever u wanna call it 
+			filename: "remoteEntry.js",
+			remotes: {
+				MicroFrontend: "MicroFrontend@http://localhost:3001/remoteEntry.js"	// MicroFE-1 runs on a different port 3000, shelly runs on 3000.
+					// where the key "MicroFrontend" is the name of the app. 
+					// If name of MFE-1 was something else like "home, then above entry in remotes would become:
+					// home: "home@http://localhost:3001/remoteEntry.js"
+			}
+		})
+		]
+		
+	webpack.config.js for Micro-FE1 
+		plugins:[htmlPlugin, new ModuleFederationPlugin({
+			name: "Micro-FE1",	
+			filename: "remoteEntry.js",
+			exposes: {
+			"./Button":"./src/Button"	
+			},
+			
+		})
+	]
+
+
+----
+
+More on Micro FE 
+
+	npx create-mf-app 
+	NOTE: remoteEntry.js is a manifest of all the exposed-modules. https://localhost:3000/remoteEntry.js 
+
+webpack config:-
+	properties under new ModuleFederationPlugin({
+		name:"" // try to keep simple names which have \w+ characters.
+		filename:"remoteEntry.js",
+		remotes:{},	// get components from somewhere. since it is empty it is not getting any comps from anywhere.
+		exposes:{
+			"./Header":"./src/Header.jsx", //componentName:path 
+			"./Footer":"./src/Footer.jsx",
+		},
+		shared : {
+		...deps,
+		react: {
+			singleton: true,
+			requiredVersion: deps.react
+			}
+		},
+		"react-dom": {
+			singleton: true,
+			requiredVersion: deps["react-dom"]
+			}
+		}
+	
+	})
+	
+----
+
+HOST:	npx create-mf-app	cd host/   npm install + npm start		8080 	react 	<Header />comp react-bootstrap
+		npm install react-bootstrap bootstrap
+		Menubar docking: https://github.com/alexkuz/react-dock/blob/master/src/Dock.js
+						 https://alexkuz.github.io/react-dock/demo/
+						 https://github.com/alexkuz/react-dock/blob/master/demo/src/App.jsx		
+		MUI 
+			npm install @mui/material @emotion/react @emotion/styled --save 
+			npm install @fontsource/roboto --save 
+			npm install @mui/icons-material
+				emotion vs styled-components: which one to use? styled comps are not compatible with server side rendered MUI.
+				
+			<meta name="viewport" content="initial-scale=1, width=device-width" />
+			To ensure proper rendering and touch zooming for all devices, add the responsive viewport meta tag to your <head> element:	
+
+			Material UI provides an optional CssBaseline component. (i think it may not work properly)
+
+			https://mui.com/material-ui/getting-started/example-projects/
+				has many sample projects, which IMHO look promising.
+
+npx create-mf-app	cd host/   npm install + npm start		8081	react
+npx create-mf-app	cd host/   npm install + npm start		8082	react 
+	
+++++++
+
+NOTE: any private keys like license keys etc. should be placed in your .npmrc file.
+
+++++++
+
+Middleware/Broker (React Saga)
+>> action dispatched -> Middleware/Broker (Saga/Thunk)	-> Redux reducer -> Store 
+
+++++++
+
+Material UI (MUI)
+- media queries: in building responsive web apps in CSS, media queries are used, but in MUI media queries are exposed out of the box using 
+	theme.breakpoints.*
+	
+	Below key can be, md, sm, lg, etc.
+	theme.breakpoints.up(key)
+	theme.breakpoints.down(key)
+	theme.breakpoints.only(key)
+	theme.breakpoints.not(key)
+	theme.breakpoints.between(start,end)
+	
+	import Box from "@mui/material/Box";
+	import Typography from "@mui/material/Typography";
+	import {styled} from "@mui/material/styles";
+
+Refs:-
+	https://www.youtube.com/watch?v=FB-sKY63AWo and google.
+
+++++++
+
+React PWA:
+	https://www.youtube.com/watch?v=bRoRikxgIew&list=PL8p2I9GklV46NFHdQMFBjXvxwVqtJpa2N
+	- make ur webapp behave like a native mobile app. (also called native app; mobile is implied).
+
+++++++
+
+React Cheatsheets:
+	https://www.freecodecamp.org/news/the-react-cheatsheet/#react-elements
+		>> Props can also be passed by placing data between the opening and closing tags of a component.
+			function App() {
+			  return (
+			   <User>
+				 <h1>Hello, John Doe!</h1>
+			   </User>
+			  );
+			}
+
+			function User({ children }) {		// IMP: Notice how "children" is inbuilt key being destructured. 
+			  return children; // Hello, John Doe!
+			}
+			
+		>>  {isAuthUser ? <AuthApp /> : <UnAuthApp />}	
+
+++++++
+
+React-Router cheatsheet (is this for class based components??)
+
+	https://devhints.io/react-router
+	<Route path='/'>
+	  <DefaultRoute handler={Home} />
+	  <NotFoundRoute handler={NotFound} />
+	  
+	  <Redirect from='login' to='sessions/new' />
+	  <Redirect from='login' to='sessions/new' params={{from: 'home'}} />
+	  <Redirect from='profile/:id' to='about-user' />
+
+	  <Route name='about-user' ... />
+	  
+	>> import { Navigation } from 'react-router'
+
+		React.createClass({
+		  mixins: [ Navigation ], ...
+		})
+
+		this
+		  .transitionTo('user', {id: 10})
+		  .transitionTo('/path')
+		  .transitionTo('http://...')
+		  .replaceWith('about')
+		  .makePath('about') // return URL
+		  .makeHref('about') // return URL
+		  .goBack()  
+
+++++++
+
+Design Patterns:-	
+
+	SOLID PRINCIPLES:-
+		- S is for Single Responsibility 
+		- O is for Open Closed 
+		- L is for Liskov Substitution
+		- I is for interface segregation 
+		- D is for Dependency Inversion 
+
+Anti Patterns:-
+https://www.youtube.com/watch?v=b0IZo2Aho9Y
+
+----
+
+Must know react libs:
+	// react-render-dom features, kendo ui for react, 
+	jwt-token,
+	React.Lazy + React.Suspense + fallback 
+	react-idle-timer,
+	react-hook-form, (yup or zod for form validations??)
+	react-intl 
+	react-bootstrap (provides accessibility) -OR- Material-UI(old) / MUI (new)
+	axios interceptors ?? https://upmostly.com/tutorials/set-up-axios-interceptors-in-your-reactjs-application
+	rxjs::BehaviorSubjects 
+	ContextAPI + Redux + Saga for state management 
+	Unit testing with jest. (jest is inbuilt in CRA, whereas jasmine is popular in angular)
+	end to end testing using cypress. 
+	SSR ?  https://www.digitalocean.com/community/tutorials/react-server-side-rendering
+	
+	More references for individual npm packages:-
+	https://dev.to/manindu/a-list-of-useful-npm-packages-for-react-developers-3dhg
+	
+	Questions:-
+	Q.1. SSR in MicroFE 
+	Q.2. Multi-tenancy in MicroFE 
+	
+---- 
+
+React forms https://www.youtube.com/watch?v=KejZXxFCe2k&list=PLC3y8-rFHvwjmgBr1327BA5bVXoQH-w5s
+For forms: react-hook-form vs Formik
+			- Formik is not maintained as of now; both work with react and react-native.
+			- react-hook-form works only with hooks-style of coding and not with class-component style of coding.
+			- so we will study react-hook-form and material ui. 
+			
+
+>> React Hook Form is a lib which helps with managing form data, submitting form data, validations, provide visual feedbacks
+>> Project creation
+	npm create vite@latest demo (React + Typescript)
+	cd into folder demo/
+	npm install 
+	npm run dev 
+	
+	-OR- 
+	
+	CRA (create-react-app)
+	npx create-react-app demo --template typescript
+	cd demo/
+	npm start 
+	
+	components/YouTubeform.js and use "rafc" snippet to write boilerplate code.
+	
+	npm install react-hook-form 
+	
+	import { useForm } from 'react-hook-form';
+	const form = useForm();	// form state has: values, errors, visited, isValid:Boolean 
+	
+	
+
+----
+---- 
+
+React Storybook
+	
+----
+
+Display large lists using React and Faker
+	Ref: https://blog.logrocket.com/render-large-lists-react-5-methods-examples/
+	Libs:
+	1) react-paginate	
+	2) react-infinite-scroller
+	3) react-virtualized
+	4) react-window
+		react-window is a set of components for efficiently rendering large lists in React. A complete rewrite of react-virtualized,
+	5) react-viewport-list
+		Like react-virtualized, React ViewPort List utilizes a technique called windowing, which renders only a portion of the list at a time, significantly reducing the time it takes to re-render components as well as the number of DOM nodes created.
+
+Draggable (React-Draggable)
+	1) https://react-grid-layout.github.io/react-draggable/example/ 
+	
+----
